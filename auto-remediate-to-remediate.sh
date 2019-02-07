@@ -16,14 +16,22 @@ if [[ $# -ne 1 ]]; then
   echo -e $USAGE
   exit 1
 fi
- 
+
+# Compose the first part of the API curl command that includes authentication and API key information
 CURLCMD="curl -HAccept:application/json -HAPI-Key:$CONTRAST_API_KEY -HAuthorization:$CONTRAST_AUTHORIZATION"
 
+# Get an array of all app IDs where the application definition includes the text $TARGETAPP
 declare -a APP_IDS=(`$CURLCMD $BASEURL/applications/filter?filterText=$TARGETAPP | jq -r '.applications[].app_id'`)
 
+# Loop through all found app IDs and get vulnerability traces that have the status of "Auto-Remediated", then change them to "Remediated"
 for APP_ID in "${APP_IDS[@]}"
 do
+  # Get an array of auto-remediated vulnerabilities for the target application
   AUTOREMEDIATED_VULN_IDS=$($CURLCMD $BASEURL/traces/$APP_ID/ids?status=AutoRemediated | jq -r '[.traces[]]')
-#   echo -e $AUTOREMED
-  $CURLCMD -HContent-Type:application/json -X PUT -d "{\"traces\":$AUTOREMEDIATED_VULN_IDS,\"status\":\"Remediated\"}" $BASEURL/orgtraces/mark
+
+  # If there are auto-remediated vulnerabilities, then change them to remediated
+  if [ $(echo $AUTOREMEDIATED_VULN_IDS | jq '. | length') -gt 0 ]
+  then
+    $CURLCMD -HContent-Type:application/json -X PUT -d "{\"traces\":$AUTOREMEDIATED_VULN_IDS,\"status\":\"Remediated\"}" $BASEURL/orgtraces/mark
+  fi
 done
