@@ -4,10 +4,10 @@ USAGE="Usage: $0 [target app name]\n\nExample:\n$0 WebGoat"
 TARGETAPP=$1
 ## PREREQ: echo -n `echo -n your-username:your-servicekey|base64` > authorization.txt
 ## OR : `echo your-username:your-servicekey|tr -d\\\n|base64` > authorization.txt
-CONTRAST_AUTHORIZATION="YnJpYW4uY2hhdUBjb250cmFzdHNlY3VyaXR5LmNvbTo1OEdQQlMzQjUzSkNLVTFW"
+CONTRAST_AUTHORIZATION="<changeme>"
 ## PREREQ: echo -n your-api-key > apikey.txt
-CONTRAST_API_KEY="wwEHMnYEIAujE03f"
-CONTRAST_ORG="bc6cdc58-2ed7-4068-826a-082d42a07858"
+CONTRAST_API_KEY="<changeme>"
+CONTRAST_ORG="<changeme>"
  
 BASEURL="https://eval.contrastsecurity.com/Contrast/api/ng/$CONTRAST_ORG"
 
